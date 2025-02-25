@@ -10,7 +10,7 @@ public class Metier {
     private static final String URL = "jdbc:sqlite:C:\\Users\\raoufbtf\\napster-java-\\napster.db";
 
 
-    public static boolean signUp(String username, String password, int port, String ip) {
+    public static String signUp(String username, String password, int port, String ip) {
         String insertSQL = "INSERT INTO user (username, mot_de_passe, portenv, ip, last_connexion) VALUES (?, ?, ?, ?, ?);";
 
         try (Connection connection = DriverManager.getConnection(URL);
@@ -27,11 +27,17 @@ public class Metier {
             preparedStatement.setString(5, now.format(formatter));
 
             int rowsAffected = preparedStatement.executeUpdate();
-            return rowsAffected > 0;
+            return "{" +
+                    "reponse='" + "signup" + '\'' +
+                            ", etat ='" + "true" + '\'' +
+                            '}';
 
         } catch (SQLException e) {
             System.err.println("Erreur lors de l'inscription : " + e.getMessage());
-            return false;
+            return "{" +
+                    "reponse='" + "signup" + '\'' +
+                    ", etat ='" + "false" + '\'' +
+                    '}';
         }
     }
     public static void pong(String username) {
@@ -59,7 +65,7 @@ public class Metier {
 
 
 
-    public static boolean login(String username, String password) {
+    public static  String login(String username, String password) {
         String query = "SELECT EXISTS(SELECT 1 FROM user WHERE username = ?) AS user_exists;";
         String passwordQuery = "SELECT mot_de_passe FROM user WHERE username = ?;";
         boolean rs=false;
@@ -85,15 +91,21 @@ public class Metier {
             }
             if ( rs ==true){
                 pong(username);
-                return true;
+                return "{" +
+                        "reponse:'" + "login" + '\'' +
+                        ", etat :'" + "true" + '\'' +
+                        '}';
             }
 
         } catch (SQLException e) {
             System.err.println("Erreur lors de la connexion : " + e.getMessage());
         }
-        return false;
+        return "{" +
+                "reponse:'" + "login" + '\'' +
+                ", etat :'" + "false" + '\'' +
+                '}';
     }
-    public static boolean publish (String user ,String nom_fichier, int taille ){
+    public static String publish (String user ,String nom_fichier, int taille ){
          String  find  = "SELECT id FROM user WHERE username = ?;" ;
           String   publish = "INSERT INTO fichier (id_user, nom_fichier, taille) VALUES (?, ?, ?);";
         try (Connection connection = DriverManager.getConnection(URL);
@@ -106,24 +118,35 @@ public class Metier {
                   Statementadd.setString(2, nom_fichier);
                   Statementadd.setInt(3, taille);
                   Statementadd.executeUpdate();
-                  return true;
+                 return "{" +
+                         "reponse:'" + "publish"  + '\'' +
+                         ", etat :'" + "true" + '\'' +
+                         '}';
 
              }catch (SQLException e) {
                  System.err.println("Erreur lors de la connexion : " + e.getMessage());
-                 return false;
+                 return "{" +
+                         "reponse:'" + "publish"  + '\'' +
+                         ", etat :'" + "false" + '\'' +
+                         '}';
              }
 
 
 
         }catch (SQLException e) {
             System.err.println("Erreur lors de la connexion : " + e.getMessage());
-            return false;
+            return "{" +
+                    "reponse :'" +"publish"   + '\'' +
+                    ", etat :'" + "false" + '\'' +
+                    '}';
         }
 
     }
     public static String findfile(String nomfichier) {
         // Initialisation du résultat JSON
-        StringBuilder resultat = new StringBuilder("{");
+        StringBuilder resultat = new StringBuilder("{" +
+                "reponse:'" +"findfile"   + '\'' +
+                ", data : [" );
 
 
         String findfile = "SELECT json_object('taille', f.taille, 'ip', u.ip, 'portenv', u.portenv) AS json_result " +
@@ -161,7 +184,7 @@ public class Metier {
         }
 
         // Fermer le JSON final
-        resultat.append("}");
+        resultat.append(" ]}");
 
         // Retourner le résultat JSON
         return resultat.toString();
