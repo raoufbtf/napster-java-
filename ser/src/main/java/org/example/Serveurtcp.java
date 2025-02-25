@@ -51,16 +51,16 @@ class ClientHandler implements Runnable {
                 case "singup":{
                     out.println(Metier.signUp(jsonObject.get("username").getAsString(),
                             jsonObject.get("password").getAsString(),
-                            jsonObject.get("methode").getAsInt(),clientSocket.getInetAddress().toString()));
+                            jsonObject.get("port").getAsInt(),clientSocket.getInetAddress().toString()));
                     break;
                 }
                 case "login":{
                     out.println(Metier.login(jsonObject.get("username").getAsString(),
-                            jsonObject.get("password").getAsString()));
+                            jsonObject.get("password").getAsString(),clientSocket.getInetAddress().toString()));
                     break;
                 }
                 case "ping":{
-                    Metier.pong(jsonObject.get("username").getAsString());
+                    Metier.pong(jsonObject.get("username").getAsString(),clientSocket.getInetAddress().toString());
                     break;
                 }
                 case "publish":{

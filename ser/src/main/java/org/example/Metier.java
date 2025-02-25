@@ -40,8 +40,8 @@ public class Metier {
                     '}';
         }
     }
-    public static void pong(String username) {
-        String pong = "UPDATE user SET last_connexion = ? WHERE username = ?;";
+    public static void pong(String username , String ip ) {
+        String pong = "UPDATE user SET last_connexion = ?, ip= ? WHERE username = ?;";
 
         try (Connection connection = DriverManager.getConnection(URL);
              PreparedStatement statement = connection.prepareStatement(pong)) {
@@ -49,7 +49,8 @@ public class Metier {
             LocalDateTime now = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             statement.setString(1, now.format(formatter));
-            statement.setString(2, username);
+            statement.setString(2, ip);
+            statement.setString(3, username);
 
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected > 0) {
@@ -65,7 +66,7 @@ public class Metier {
 
 
 
-    public static  String login(String username, String password) {
+    public static  String login(String username, String password,String ip) {
         String query = "SELECT EXISTS(SELECT 1 FROM user WHERE username = ?) AS user_exists;";
         String passwordQuery = "SELECT mot_de_passe FROM user WHERE username = ?;";
         boolean rs=false;
@@ -90,7 +91,7 @@ public class Metier {
                 }
             }
             if ( rs ==true){
-                pong(username);
+                pong(username,ip);
                 return "{" +
                         "reponse:'" + "login" + '\'' +
                         ", etat :'" + "true" + '\'' +
