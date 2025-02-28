@@ -23,8 +23,8 @@ public class Main {
             // Exemple de message JSON pour l'inscription (signup)
             JsonObject signupJson = new JsonObject();
             signupJson.addProperty("methode", "login");
-            signupJson.addProperty("username", "user123");
-            signupJson.addProperty("password", "pass12");
+            signupJson.addProperty("username", "kask");
+            signupJson.addProperty("password", "kask");
 
             // Envoi du message JSON au serveur
             out.println(signupJson.toString());

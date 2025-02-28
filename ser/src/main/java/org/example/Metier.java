@@ -1,6 +1,8 @@
 package org.example;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.sql.*;
@@ -107,7 +109,7 @@ public class Metier {
                 '}';
     }
     public static String publish (String user ,String nom_fichier, int taille ){
-         String  find  = "SELECT id FROM user WHERE username = ?;" ;
+         String  find  = "SELECT id FROM user WHERE username = ? ;" ;
           String   publish = "INSERT INTO fichier (id_user, nom_fichier, taille) VALUES (?, ?, ?);";
         try (Connection connection = DriverManager.getConnection(URL);
              PreparedStatement Statementid  = connection.prepareStatement(find);
@@ -143,26 +145,26 @@ public class Metier {
         }
 
     }
+
+
     public static String findfile(String nomfichier) {
         // Initialisation du résultat JSON
         StringBuilder resultat = new StringBuilder("{" +
-                "reponse:'" +"findfile"   + '\'' +
-                ", data : [" );
+                "reponse:'" + "findfile" + '\'' +
+                ", data : [");
 
-
+        // Requête SQL pour récupérer les informations du fichier et vérifier la dernière connexion
         String findfile = "SELECT json_object('taille', f.taille, 'ip', u.ip, 'portenv', u.portenv) AS json_result " +
-                "FROM fichier f JOIN user u ON f.id_user = u.id WHERE f.nom_fichier = ?;";
+                "FROM fichier f JOIN user u ON f.id_user = u.id " +
+                "WHERE f.nom_fichier = ? AND datetime(u.last_connexion) >= datetime('now', '-5 minutes')";
 
-        try (Connection connection =  DriverManager.getConnection(URL);
+        try (Connection connection = DriverManager.getConnection(URL);
              PreparedStatement statementFile = connection.prepareStatement(findfile)) {
-
 
             statementFile.setString(1, nomfichier);
 
-
             try (ResultSet rs = statementFile.executeQuery()) {
                 boolean first = true;
-
 
                 while (rs.next()) {
                     if (!first) {
@@ -170,7 +172,6 @@ public class Metier {
                     } else {
                         first = false;
                     }
-
 
                     String jsonResult = rs.getString("json_result");
 
@@ -190,7 +191,4 @@ public class Metier {
         // Retourner le résultat JSON
         return resultat.toString();
     }
-
-
-
 }
