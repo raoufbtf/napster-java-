@@ -1,44 +1,30 @@
 package org.example;
 
-import com.google.gson.JsonObject;
-
-import java.io.*;
-import java.net.Socket;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 public class Main {
     public static void main(String[] args) {
-        String serverAddress = "localhost"; // Adresse IP du serveur
-        int serverPort = 12345; // Port du serveur
-
         try {
-            // Connexion au serveur
-            Socket socket = new Socket(serverAddress, serverPort);
-            System.out.println("Connecté au serveur " + serverAddress + ":" + serverPort);
+            Registry registry = LocateRegistry.getRegistry("localhost", 1099);
+            RemoteService service = (RemoteService) registry.lookup("RemoteService");
 
-            // Flux de sortie pour envoyer des données au serveur
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            // Flux d'entrée pour recevoir des données du serveur
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            // Exemple d'utilisation des méthodes distantes
+            String response = service.signUp("user1", "password123", 12345, "127.0.0.1");
+            System.out.println("Réponse signUp: " + response);
 
-            // Exemple de message JSON pour l'inscription (signup)
-            JsonObject signupJson = new JsonObject();
-            signupJson.addProperty("methode", "login");
-            signupJson.addProperty("username", "kask");
-            signupJson.addProperty("password", "kask");
+            response = service.login("user1", "password123", "127.0.0.1");
+            System.out.println("Réponse login: " + response);
 
-            // Envoi du message JSON au serveur
-            out.println(signupJson.toString());
-            System.out.println("Message envoyé au serveur: " + signupJson.toString());
+            service.pong("user1", "127.0.0.1");
+            System.out.println("Pong envoyé");
 
-            // Réception de la réponse du serveur
-            String response = in.readLine();
-            System.out.println("Réponse du serveur: " + response);
+            response = service.publish("user1", "file.txt", 1024);
+            System.out.println("Réponse publish: " + response);
 
-            // Fermeture des flux et de la socket
-            out.close();
-            in.close();
-            socket.close();
-        } catch (IOException e) {
+            response = service.findfile("file.txt");
+            System.out.println("Réponse findfile: " + response);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
