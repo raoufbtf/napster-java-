@@ -9,7 +9,7 @@ import java.sql.*;
 
 public class Metier {
 
-    private static final String URL = "jdbc:sqlite:C:\\Users\\raoufbtf\\napster-java-\\napster.db";
+    private static final String URL = "jdbc:sqlite:D:\\JavaProjects\\napster-java-\\ser\\napster.db";
 
 
     public static String signUp(String username, String password, int port, String ip) {
@@ -118,7 +118,7 @@ public class Metier {
              try (ResultSet  rs=Statementid.executeQuery();){
                   rs.next();
                   Statementadd.setInt(1, Integer.parseInt(rs.getString("id")));
-                  Statementadd.setString(2, nom_fichier);
+                  Statementadd.setString(2, nom_fichier.toLowerCase());
                   Statementadd.setInt(3, taille);
                   Statementadd.executeUpdate();
                  return "{" +
@@ -149,14 +149,15 @@ public class Metier {
 
     public static String findfile(String nomfichier) {
         // Initialisation du résultat JSON
-        StringBuilder resultat = new StringBuilder("{" +
-                "reponse:'" + "findfile" + '\'' +
-                ", data : [");
+        StringBuilder resultat = new StringBuilder("[");
 
         // Requête SQL pour récupérer les informations du fichier et vérifier la dernière connexion
-        String findfile = "SELECT json_object('taille', f.taille, 'ip', u.ip, 'portenv', u.portenv) AS json_result " +
-                "FROM fichier f JOIN user u ON f.id_user = u.id " +
-                "WHERE f.nom_fichier = ? AND datetime(u.last_connexion) >= datetime('now', '-5 minutes')";
+        String findfile = "SELECT json_object('Filename',f.nom_fichier ,'taille', f.taille, 'ip', u.ip, 'portenv', u.portenv) AS json_result\n" +
+                "FROM fichier f\n" +
+                "JOIN user u ON f.id_user = u.id\n" +
+                "WHERE f.nom_fichier LIKE ? || '%' \n" +
+                "AND Datetime(last_connexion) >= Datetime('now', '+55 minutes')";
+
 
         try (Connection connection = DriverManager.getConnection(URL);
              PreparedStatement statementFile = connection.prepareStatement(findfile)) {
@@ -186,7 +187,7 @@ public class Metier {
         }
 
         // Fermer le JSON final
-        resultat.append(" ]}");
+        resultat.append("]");
 
         // Retourner le résultat JSON
         return resultat.toString();

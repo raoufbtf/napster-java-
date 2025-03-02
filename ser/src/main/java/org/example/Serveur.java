@@ -13,17 +13,18 @@ import java.rmi.server.RMIServerSocketFactory;
 
 // Serveur RMI
 public class Serveur {
+    private static int port = 1099;
     public static void main(String[] args) {
         try {
             RemoteService service = new RemoteServiceImpl();
-            Registry registry = LocateRegistry.createRegistry(1099,null, new RMIServerSocketFactory() {
+            Registry registry = LocateRegistry.createRegistry(port,null, new RMIServerSocketFactory() {
                 @Override
                 public ServerSocket createServerSocket(int port) throws IOException {
                     return new ServerSocket(port, 0, InetAddress.getByName("localhost" )); // Cambia por tu IP
                 }
             });
             registry.rebind("RemoteService", service);
-            System.out.println("Serveur RMI en attente de connexions...");
+            System.out.println("Serveur RMI en attente de connexions en : "+port);
         } catch (RemoteException e) {
             e.printStackTrace();
         }

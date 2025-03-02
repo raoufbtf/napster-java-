@@ -6,11 +6,11 @@ import java.net.*;
 public class Clientfile {
     private static final String SERVER_ADDRESS = "127.0.0.1"; // Adresse du serveur
     private static final int SERVER_PORT = 5000; // Port du serveur
-    private static final String SAVE_DIR = "C:\\Users\\raoufbtf\\napster-java-\\client\\src\\main\\java\\org\\example\\downloads\\"; // Dossier de téléchargement
+    private static final String SAVE_DIR = "D:\\JavaProjects\\napster-java-\\client\\src\\main\\java\\org\\example\\downloads\\"; // Dossier de téléchargement
 
 
 
-    private static void requestFile(String SERVER_ADDRESS, int SERVER_PORT, String fileName) {
+    static void requestFile(String SERVER_ADDRESS, int SERVER_PORT, String fileName) {
         try (
                 Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
                 DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
