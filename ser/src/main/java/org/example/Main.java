@@ -9,20 +9,11 @@ public class Main {
             Registry registry = LocateRegistry.getRegistry("localhost", 1099);
             RemoteService service = (RemoteService) registry.lookup("RemoteService");
 
-            // Exemple d'utilisation des méthodes distantes
-            String response = service.signUp("user1", "password123", 12345, service.getip());
-            System.out.println("Réponse signUp: " + response );
 
-            response = service.login("user1", "password123", service.getip());
-            System.out.println("Réponse login: " + response);
 
-            service.pong("user1", service.getip());
-            System.out.println("Pong envoyé");
 
-            response = service.publish("user1", "file.txt", 1024);
-            System.out.println("Réponse publish: " + response);
 
-            response = service.findfile("file.txt");
+             String response = service.findfile("file.txt");
             System.out.println("Réponse findfile: " + response);
         } catch (Exception e) {
             e.printStackTrace();

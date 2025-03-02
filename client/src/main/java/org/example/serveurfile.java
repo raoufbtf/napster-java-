@@ -7,7 +7,7 @@ public class serveurfile {
     private static final int PORT = 5000; // Port d'écoute
     private static final String SAVE_DIR = "C:\\Users\\raoufbtf\\napster-java-\\client\\src\\main\\java\\org\\example\\files sent\\"; // Dossier de stockage des fichiers à envoyer
 
-    public static void main(String[] args) {
+    public void serverfile() {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Serveur en attente de connexion sur le port " + PORT + "...");
 
