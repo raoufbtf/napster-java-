@@ -10,13 +10,13 @@ public class Main {
             RemoteService service = (RemoteService) registry.lookup("RemoteService");
 
             // Exemple d'utilisation des méthodes distantes
-            String response = service.signUp("user1", "password123", 12345, "127.0.0.1");
-            System.out.println("Réponse signUp: " + response);
+            String response = service.signUp("user1", "password123", 12345, service.getip());
+            System.out.println("Réponse signUp: " + response );
 
-            response = service.login("user1", "password123", "127.0.0.1");
+            response = service.login("user1", "password123", service.getip());
             System.out.println("Réponse login: " + response);
 
-            service.pong("user1", "127.0.0.1");
+            service.pong("user1", service.getip());
             System.out.println("Pong envoyé");
 
             response = service.publish("user1", "file.txt", 1024);
