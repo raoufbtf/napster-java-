@@ -1,14 +1,15 @@
 package org.example;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 import java.io.*;
 import java.net.*;
 
 public class Clientfile {
     private static final String SERVER_ADDRESS = "127.0.0.1"; // Adresse du serveur
     private static final int SERVER_PORT = 5000; // Port du serveur
-    private static final String SAVE_DIR = "D:\\JavaProjects\\napster-java-\\client\\src\\main\\java\\org\\example\\downloads\\"; // Dossier de téléchargement
-
-
+    private static final Dotenv dotenv = Dotenv.load();
+    private static final String SAVE_DIR = dotenv.get("SAVE_DIR");
 
     static void requestFile(String SERVER_ADDRESS, int SERVER_PORT, String fileName) {
         try (
@@ -34,6 +35,7 @@ public class Clientfile {
     }
 
     private static void receiveFile(Socket socket, String fileName) {
+        assert SAVE_DIR != null;
         File dir = new File(SAVE_DIR);
         if (!dir.exists()) dir.mkdirs();
 

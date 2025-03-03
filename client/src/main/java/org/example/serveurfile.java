@@ -1,14 +1,17 @@
 package org.example;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 import java.io.*;
 import java.net.*;
 
 public class serveurfile {
-    private static final int PORT = 5000; // Port d'écoute
-    private static final String SAVE_DIR = "D:\\JavaProjects\\napster-java-\\client\\src\\main\\java\\org\\example\\files sent\\"; // Dossier de stockage des fichiers à envoyer
+    private static final int PORT = 5000;
+    private static final Dotenv dotenv = Dotenv.load();
+    private static final String SENT_DIR = dotenv.get("SENT_DIR");
 
-    public static void serverfile() {
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+    public static void serverfile(String IP) {
+        try (ServerSocket serverSocket = new ServerSocket(PORT,50, InetAddress.getByName(IP))) {
             System.out.println("Serveur en attente de connexion sur le port " + PORT + "...");
 
             while (true) {
@@ -16,7 +19,8 @@ public class serveurfile {
                 System.out.println("Client connecté : " + socket.getInetAddress());
 
                 // Assurer que le dossier existe
-                File dir = new File(SAVE_DIR);
+                assert SENT_DIR != null;
+                File dir = new File(SENT_DIR);
                 if (!dir.exists()) dir.mkdirs();
 
                 // Attendre et traiter la demande du client
@@ -36,7 +40,7 @@ public class serveurfile {
         ) {
             // Lire le nom du fichier demandé par le client
             String fileName = dis.readUTF();
-            File file = new File(SAVE_DIR + fileName);
+            File file = new File(SENT_DIR + fileName);
 
             if (file.exists() && file.isFile()) {
                 dos.writeUTF("OK"); // Indique que le fichier existe
