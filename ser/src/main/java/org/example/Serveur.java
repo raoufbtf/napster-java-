@@ -14,13 +14,14 @@ import java.rmi.server.RMIServerSocketFactory;
 // Serveur RMI
 public class Serveur {
     private static int port = 1099;
+    private static String Address = "192.168.1.101";
     public static void main(String[] args) {
         try {
             RemoteService service = new RemoteServiceImpl();
             Registry registry = LocateRegistry.createRegistry(port,null, new RMIServerSocketFactory() {
                 @Override
                 public ServerSocket createServerSocket(int port) throws IOException {
-                    return new ServerSocket(port, 0, InetAddress.getByName("localhost" )); // Cambia por tu IP
+                    return new ServerSocket(port, 0, InetAddress.getByName(Address)); // Cambia por tu IP
                 }
             });
             registry.rebind("RemoteService", service);
